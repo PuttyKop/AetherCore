@@ -1,0 +1,17 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "aethercore-geometric-memory"
+version = "0.1.0"
+description = "Immune-to-rot agent memory using E8 lattice geometry"
+authors = [{name = "AetherCore Architect", email = "architect@aethercore.ai"}]
+dependencies = [
+    "mcp",
+    "numpy",
+    "requests"
+]
+
+[project.scripts]
+aethercore-geo-mem = "aethercore_mcp:main"

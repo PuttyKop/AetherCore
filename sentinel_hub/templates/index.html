@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AetherCore Sentinel Hub | Ignition Phase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/recharts/umd/Recharts.js"></script>
+    <style>
+        body { background-color: #0f172a; color: #e2e8f0; font-family: 'Courier New', Courier, monospace; }
+        .neon-text { text-shadow: 0 0 5px #06b6d4, 0 0 10px #06b6d4; }
+        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid #334155; }
+        .blink { animation: blinker 1.5s linear infinite; }
+        @keyframes blinker { 50% { opacity: 0; } }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } = Recharts;
+        const { Activity, Shield, Cpu, Users, Calendar, Terminal, Scale, CheckCircle, AlertTriangle } = lucide;
+
+        const Dashboard = () => {
+            const [systemState, setSystemState] = useState({
+                fidelity: 85,
+                phase: "PHASE 1: IGNITION",
+                agents: ["Proposer: ACTIVE", "Solver: COMPUTING", "Observer: MONITORING"],
+                constraints: {
+                    "Gallium Supply": "STABLE",
+                    "Siemens License": "WARNING (<14 Days)"
+                },
+                consensus: {
+                    status: "PENDING",
+                    equitySplit: "70/30",
+                    entity: "Wyoming LLC",
+                    ipRights: "Reversion to Danny"
+                }
+            });
+
+            // Simulated Agent Log Feed
+            const [logs, setLogs] = useState([
+                { ts: "08:00:00", source: "SYSTEM", msg: "Daily Gardener Task initiated.", color: "text-green-400" },
+                { ts: "08:00:05", source: "HELIX", msg: "Loading E8 Lattice from helix/polytopecalc_core.py...", color: "text-cyan-400" },
+                { ts: "08:00:12", source: "SCHEDULER", msg: "Scanning calendars for Francois/Danny sync...", color: "text-yellow-400" },
+            ]);
+
+            useEffect(() => {
+                const interval = setInterval(() => {
+                    const newLog = {
+                        ts: new Date().toLocaleTimeString('en-GB'),
+                        source: ["OBSERVER", "HELIX", "MCP_BRIDGE"][Math.floor(Math.random() * 3)],
+                        msg: ["Monitoring port 8080...", "Optimizing DQU 7D boundary...", "Waiting for Consensus Event..."][Math.floor(Math.random() * 3)],
+                        color: "text-slate-400"
+                    };
+                    setLogs(prev => [newLog, ...prev.slice(0, 5)]);
+                }, 3000);
+                return () => clearInterval(interval);
+            }, []);
+
+            return (
+                <div className="min-h-screen p-6 grid grid-cols-12 gap-6">
+                    {/* Header */}
+                    <header className="col-span-12 glass-panel p-4 rounded-lg flex justify-between items-center border-b-2 border-cyan-500">
+                        <div>
+                            <h1 className="text-3xl font-bold text-cyan-400 neon-text tracking-widest">AETHERCORE :: SENTINEL HUB</h1>
+                            <span className="text-xs text-slate-400 uppercase tracking-widest">Ignition Sequence // GCP Project: dzynagentic</span>
+                        </div>
+                        <div className="flex items-center space-x-4">
+                            <div className="flex flex-col text-right">
+                                <span className="text-xs text-green-400 font-bold">SYSTEM ONLINE</span>
+                                <span className="text-xs text-slate-500">v18.0.1 (Helix)</span>
+                            </div>
+                            <div className="h-4 w-4 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_#22c55e]"></div>
+                        </div>
+                    </header>
+
+                    {/* KPI Cards */}
+                    <div className="col-span-12 md:col-span-3 glass-panel p-4 rounded-lg flex flex-col items-center justify-center relative overflow-hidden group hover:border-cyan-500 transition-colors">
+                        <Activity className="text-cyan-400 mb-2 group-hover:scale-110 transition-transform" size={32} />
+                        <h2 className="text-4xl font-bold text-white">{systemState.fidelity}%</h2>
+                        <span className="text-xs text-slate-400 tracking-widest mt-1">SYSTEM FIDELITY</span>
+                        <div className="absolute bottom-0 w-full h-1 bg-gradient-to-r from-cyan-900 to-cyan-500"></div>
+                    </div>
+                    <div className="col-span-12 md:col-span-3 glass-panel p-4 rounded-lg flex flex-col items-center justify-center relative overflow-hidden group hover:border-purple-500 transition-colors">
+                        <Shield className="text-purple-400 mb-2 group-hover:scale-110 transition-transform" size={32} />
+                        <h2 className="text-xl font-bold text-white">{systemState.phase}</h2>
+                        <span className="text-xs text-slate-400 tracking-widest mt-1">CURRENT STATUS</span>
+                        <div className="absolute bottom-0 w-full h-1 bg-gradient-to-r from-purple-900 to-purple-500"></div>
+                    </div>
+                    
+                    {/* Consensus Tracker (The 70/30 Split) */}
+                    <div className="col-span-12 md:col-span-6 glass-panel p-4 rounded-lg flex flex-col justify-between relative overflow-hidden border-yellow-500/30">
+                        <div className="flex items-center justify-between mb-2">
+                             <h3 className="text-lg font-bold text-yellow-400 flex items-center">
+                                <Scale className="mr-2" size={20} /> AXIOMATIC CONSENSUS
+                            </h3>
+                            <span className="text-xs bg-yellow-900 text-yellow-200 px-2 py-1 rounded blink">ACTION REQUIRED</span>
+                        </div>
+                        <div className="grid grid-cols-3 gap-4 text-sm">
+                            <div className="bg-slate-800 p-2 rounded border border-slate-700">
+                                <span className="block text-xs text-slate-500">EQUITY SPLIT</span>
+                                <span className="font-bold text-white text-lg">{systemState.consensus.equitySplit}</span>
+                            </div>
+                            <div className="bg-slate-800 p-2 rounded border border-slate-700">
+                                <span className="block text-xs text-slate-500">ENTITY</span>
+                                <span className="font-bold text-white">{systemState.consensus.entity}</span>
+                            </div>
+                            <div className="bg-slate-800 p-2 rounded border border-slate-700">
+                                <span className="block text-xs text-slate-500">IP RIGHTS</span>
+                                <span className="font-bold text-white">{systemState.consensus.ipRights}</span>
+                            </div>
+                        </div>
+                        <div className="mt-3 text-xs text-slate-400 text-center">
+                            Waiting for meeting confirmation with Francois...
+                        </div>
+                    </div>
+
+                    {/* Agent Feed */}
+                    <div className="col-span-12 md:col-span-8 glass-panel p-4 rounded-lg h-96 overflow-hidden flex flex-col">
+                         <div className="flex items-center mb-4 border-b border-slate-700 pb-2 justify-between">
+                            <div className="flex items-center">
+                                <Terminal className="mr-2 text-slate-400" size={18} />
+                                <h3 className="text-lg font-semibold text-slate-200">AGENTIC LOG FEED</h3>
+                            </div>
+                            <span className="text-xs text-slate-500">Live Stream</span>
+                        </div>
+                        <div className="space-y-2 font-mono text-sm flex-1 overflow-y-auto">
+                            {logs.map((log, i) => (
+                                <div key={i} className={`${log.color} border-l-2 border-slate-700 pl-2`}>
+                                    <span className="opacity-50 mr-2">[{log.ts}]</span>
+                                    <span className="font-bold mr-2">{log.source}:</span>
+                                    {log.msg}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                     {/* Constraints & Calendar */}
+                    <div className="col-span-12 md:col-span-4 space-y-6">
+                        <div className="glass-panel p-4 rounded-lg">
+                            <h3 className="text-lg font-semibold text-slate-200 mb-3 flex items-center">
+                                <AlertTriangle className="mr-2 text-red-400" size={18} /> CRITICAL CONSTRAINTS
+                            </h3>
+                            <ul className="space-y-2">
+                                {Object.entries(systemState.constraints).map(([key, val]) => (
+                                    <li key={key} className="flex justify-between text-sm bg-slate-800/50 p-2 rounded">
+                                        <span className="text-slate-400 uppercase">{key}</span>
+                                        <span className={val.includes("WARNING") ? "text-red-400 font-bold" : "text-green-400"}>{val}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <div className="glass-panel p-4 rounded-lg relative overflow-hidden">
+                             <h3 className="text-lg font-semibold text-slate-200 mb-3 flex items-center">
+                                <Calendar className="mr-2 text-cyan-400" size={18} /> AUTONOMOUS SCHEDULER
+                            </h3>
+                             <div className="text-center py-4 relative z-10">
+                                <p className="text-2xl font-bold text-white mb-1">TODAY'S SYNC</p>
+                                <p className="text-sm text-cyan-300 animate-pulse">Scanning Availability...</p>
+                                <div className="mt-4 grid grid-cols-2 gap-2">
+                                     <button className="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded text-xs text-white transition-colors">
+                                        FORCE SCAN
+                                    </button>
+                                    <button className="px-3 py-2 bg-cyan-600 hover:bg-cyan-700 rounded text-xs text-white font-bold transition-colors shadow-[0_0_10px_rgba(6,182,212,0.5)]">
+                                        CONFIRM SLOT
+                                    </button>
+                                </div>
+                             </div>
+                             {/* Background decoration */}
+                             <div className="absolute -right-10 -bottom-10 h-32 w-32 bg-cyan-500/10 rounded-full blur-2xl"></div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<Dashboard />);
+    </script>
+</body>
+</html>
