@@ -70,7 +70,7 @@ def main():
         service = build('calendar', 'v3', credentials=creds)
 
         # 1. Get User's Calendar
-        my_events = list_events(service, 'primary')
+        my_events = list_events(service, 'botha.danny@gmail.com')
 
         # 2. Get Francois's Calendar (Simulated attempt, requires permission)
         # In a real app, this would be a secondary calendar ID or a service account lookup
